@@ -4,7 +4,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,11 +24,11 @@ public class WordsContainer implements InitializingBean{
     private ArrayList<String> stopWords = new ArrayList<>();
 
     List<String> getStopWords(){
-        if(stopWords.size() == 0){
-            loadWords();
-        }
         return stopWords;
     }
+
+    @Autowired
+    private ResourceLoader resourceLoader;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -36,7 +38,9 @@ public class WordsContainer implements InitializingBean{
     private void loadWords(){
         LOGGER.info("LOAD Stop-word_dic.txt");
         try {
-            File file  = new ClassPathResource("Stop-word_dic.txt").getFile();
+
+            Resource resource = resourceLoader.getResource("classpath:Stop-word_dic.txt");
+            File file = resource.getFile();
             try {
                 Scanner scanner = new Scanner(file);
                 while(scanner.hasNextLine()){
