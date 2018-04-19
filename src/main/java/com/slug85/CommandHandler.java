@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
@@ -20,11 +19,11 @@ import sx.blah.discord.util.RequestBuffer;
 public class CommandHandler {
 
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
-    private IDiscordClient client;
+    private Launcher connector;
 
     @Autowired
-    public CommandHandler(IDiscordClient client){
-        this.client = client;
+    private void setConnector(Launcher c) {
+        connector = c;
     }
 
     private void sendMessage(IChannel channel, String message) {
@@ -58,7 +57,8 @@ public class CommandHandler {
     public void onDisconnect(DisconnectedEvent event) throws Exception {
             try {
                 log.info("DISCONNECTED " + event.getReason().toString());
-                client.login();
+                connector.login();
+
             } catch (Exception e) {
                log.error(e.getLocalizedMessage());
             }
