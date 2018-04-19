@@ -14,7 +14,7 @@ import sx.blah.discord.api.IDiscordClient;
 @Component
 public class Launcher {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private String clientToken;
     private CommandHandler commandHandler;
 
@@ -29,8 +29,9 @@ public class Launcher {
     }
 
     void login(){
+        LOGGER.info("start login process");
         IDiscordClient cli = new ClientBuilder().withToken(clientToken).withRecommendedShardCount().build();
-        log.info(cli.getApplicationName() + " has started");
+        LOGGER.info(cli.getApplicationName() + " has started");
         cli.getDispatcher().registerListener(clientToken);
         cli.login();
         addListeners(cli);

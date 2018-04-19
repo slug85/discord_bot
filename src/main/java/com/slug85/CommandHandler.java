@@ -17,6 +17,7 @@ import sx.blah.discord.util.RequestBuffer;
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -29,7 +30,10 @@ public class CommandHandler {
     private Launcher connector;
 
     @Resource(name = "badWords")
-    private HashMap<String, Integer> userWords;
+    private HashMap<String, Integer> stopWordsCount;
+
+    @Resource(name = "stopWords")
+    private List<String> stopWords;
 
     @Autowired
     private void setConnector(Launcher c) {
@@ -64,15 +68,24 @@ public class CommandHandler {
             this.sendMessage(event.getChannel(), "НЕТ!!!!");
         }
 
-        //счетчик ругательств
-        if(s.contains("hui")){
-            event.getMessage().addReaction(EmojiManager.getForAlias("x"));
-            int count = userWords.get(authorName)==null?0:userWords.get(authorName);
-            count++;
-            userWords.put(authorName, count);
-            String msg = event.getAuthor().mention() + " ругался уже " + count + " раз!";
-            this.sendMessage(event.getChannel(), msg);
+        //счетчик ругательств и добавление Х эмоджи
+        String[] rushWords = s.split(" ");
+        boolean reaction = false;
+        for(String word: rushWords){
+            if(stopWords.contains(word)){
+                if(!reaction){
+                    event.getMessage().addReaction(EmojiManager.getForAlias("x"));
+                    reaction = true;
+                }
+                int count = stopWordsCount.get(authorName)==null?0: stopWordsCount.get(authorName);
+                count++;
+                stopWordsCount.put(authorName, count);
+                String msg = event.getAuthor().mention() + " ругался уже " + count + " раз!";
+                this.sendMessage(event.getChannel(), msg);
+            }
         }
+
+
 
 
     }
