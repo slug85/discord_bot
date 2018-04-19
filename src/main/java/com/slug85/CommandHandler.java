@@ -27,7 +27,7 @@ public class CommandHandler {
 
     @EventSubscriber
     public void onMessageReceived(MessageReceivedEvent event) {
-        String s = event.getMessage().getContent();
+        String s = event.getMessage().getContent().toLowerCase();
 
         if(s.contains("рестартую пилот") || s.contains("рестарт") ){
             this.sendMessage(event.getChannel(), "НЕТ!!!!");
