@@ -1,5 +1,6 @@
 package com.slug85;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +38,7 @@ public class Application {
       client.login();
 
     } catch (Exception e) {
-      // do nothing.
-      log.warn("WARNING - Discord4J :" + e.getMessage());
+      log.error("WARNING - Discord4J :" + ExceptionUtils.getStackTrace(e));
     }
   }
 
