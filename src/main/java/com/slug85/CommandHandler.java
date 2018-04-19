@@ -74,7 +74,7 @@ public class CommandHandler {
         //слова из сообщения
         for(String word: rushWords){
 
-            if(wordsContainer.getStopWords().contains(word)){
+            if(wordsContainer.getStopWords().contains(word.toLowerCase())){
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("x"));
                     reaction = true;
