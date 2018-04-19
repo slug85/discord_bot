@@ -5,10 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,8 @@ public class WordsContainer implements InitializingBean{
         LOGGER.info("LOAD Stop-word_dic.txt");
         try {
 
-            Resource resource = resourceLoader.getResource("classpath:Stop-word_dic.txt");
-            File file = resource.getFile();
+            File file = ResourceUtils.getFile("classpath:Stop-word_dic.txt");
+
             try {
                 Scanner scanner = new Scanner(file);
                 while(scanner.hasNextLine()){
@@ -50,7 +51,7 @@ public class WordsContainer implements InitializingBean{
                 LOGGER.error(e.getMessage());
             }
         }
-        catch (IOException e) {
+        catch (FileNotFoundException e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
     }
