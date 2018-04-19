@@ -74,6 +74,9 @@ public class CommandHandler {
         for(String word: rushWords){
             log.info("WORD " + word);
             if(stopWords.contains(word)){
+                log.warn("BAD " + word);
+                log.warn("reaction " + reaction);
+                log.warn("contains " + stopWords.contains(word));
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("x"));
                     reaction = true;
