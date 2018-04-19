@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example;
+package com.slug85;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
