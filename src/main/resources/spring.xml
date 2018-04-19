@@ -10,5 +10,7 @@
         </constructor-arg>
     </bean>
 
+    <bean class="com.slug85.WordsContainer" id="wordsContainer"/>
+
 
 </beans>

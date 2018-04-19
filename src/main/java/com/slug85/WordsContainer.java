@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +14,11 @@ import java.util.Scanner;
 /**
  * Created by sergey.lugovskoi on 19.04.2018.
  */
-@Component
 public class WordsContainer implements InitializingBean{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WordsContainer.class.getName());
 
-    private ArrayList<String> stopWords;
+    private ArrayList<String> stopWords = new ArrayList<>();
 
     public List<String> getStopWords(){
         return stopWords;
