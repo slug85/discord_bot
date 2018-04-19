@@ -72,6 +72,7 @@ public class CommandHandler {
         String[] rushWords = s.split(" ");
         boolean reaction = false;
         for(String word: rushWords){
+            log.info("WORD " + word);
             if(stopWords.contains(word)){
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("x"));
