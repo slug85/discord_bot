@@ -64,7 +64,7 @@ public class CommandHandler {
             Emoji e = EmojiManager.getAll().stream().skip(r.nextInt(all.size()-1)).findFirst().orElse(EmojiManager.getForAlias("heart"));
             event.getMessage().addReaction(e);
 
-            this.sendMessage(event.getChannel(), "НЕТ!!!!");
+            this.sendMessage(event.getChannel(), event.getAuthor().mention() + " НЕТ!!!!");
         }
 
         //счетчик ругательств и добавление Х эмоджи
