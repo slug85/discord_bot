@@ -76,6 +76,7 @@ public class CommandHandler {
             if(stopWords.contains(word)){
                 log.warn("BAD " + word);
                 log.warn("reaction " + reaction);
+                log.warn("stopWords size " + stopWords.size());
                 log.warn("contains " + stopWords.contains(word));
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("x"));
