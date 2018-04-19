@@ -1,16 +1,15 @@
 package com.slug85;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -40,7 +39,13 @@ public class WordsContainer implements InitializingBean{
         LOGGER.info("LOAD Stop-word_dic.txt");
         try {
 
-            File file = ResourceUtils.getFile("classpath:Stop-word_dic.txt");
+            Resource resource = resourceLoader.getResource("classpath:Stop-word_dic.txt");
+            File file = new File("Stop-word_dic.txt");
+            InputStream inputStream = resource.getInputStream();
+            OutputStream outputStream = new FileOutputStream(file);
+            IOUtils.copy(inputStream, outputStream);
+            outputStream.close();
+
 
             try {
                 Scanner scanner = new Scanner(file);
@@ -51,7 +56,7 @@ public class WordsContainer implements InitializingBean{
                 LOGGER.error(e.getMessage());
             }
         }
-        catch (FileNotFoundException e) {
+        catch (IOException e) {
             LOGGER.error(ExceptionUtils.getStackTrace(e));
         }
     }
