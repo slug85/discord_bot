@@ -1,5 +1,6 @@
 package com.slug85;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,12 +21,19 @@ public class WordsContainer implements InitializingBean{
 
     private ArrayList<String> stopWords = new ArrayList<>();
 
-    public List<String> getStopWords(){
+    List<String> getStopWords(){
+        if(stopWords.size() == 0){
+            loadWords();
+        }
         return stopWords;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        loadWords();
+    }
+
+    private void loadWords(){
         LOGGER.info("LOAD Stop-word_dic.txt");
         try {
             File file  = new ClassPathResource("Stop-word_dic.txt").getFile();
@@ -38,6 +46,8 @@ public class WordsContainer implements InitializingBean{
                 LOGGER.error(e.getMessage());
             }
         }
-        catch (IOException ignored) {}
+        catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+        }
     }
 }
