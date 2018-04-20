@@ -1,7 +1,6 @@
 package com.slug85;
 
 import com.slug85.command.CommandUtils;
-import com.vdurmont.emoji.EmojiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,21 +58,9 @@ public class CommandHandler {
             commandUtils.restartPilot(event);
         }
 
-        //упоминание бота
-        if(s.toLowerCase().contains(" бот ") || s.toLowerCase().endsWith(" бот") || s.startsWith("бот ")){
-            boolean reacted = false;
-            for(String word: s.split(" ")){
-                if(wordsContainer.getStopWords().contains(word.toLowerCase())){
-                    if(!reacted){
-                        event.getMessage().addReaction(EmojiManager.getForAlias("poo"));
-                        event.getMessage().addReaction(EmojiManager.getForAlias("rage"));
-                        reacted = true;
-                    }
-                }
-            }
-        }
 
         commandUtils.checkRushWords(event);
+        commandUtils.checkBotRushWords(event);
     }
 
     @EventSubscriber
