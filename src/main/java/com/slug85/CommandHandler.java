@@ -41,14 +41,6 @@ public class CommandHandler {
 
         String[] argArray = event.getMessage().getContent().split(" ");
 
-        // First ensure at least the command and prefix is present, the arg length can be handled by your command func
-        if(argArray.length == 0)
-            return;
-
-        // Check if the first arg (the command) starts with the prefix defined in the utils class
-        if(!argArray[0].startsWith(CommandUtils.BOT_PREFIX))
-            return;
-
         // Extract the "command" part of the first arg out by just ditching the first character
         String commandStr = argArray[0].substring(1);
 
