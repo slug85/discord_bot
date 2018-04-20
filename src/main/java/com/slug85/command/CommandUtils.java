@@ -115,7 +115,7 @@ public class CommandUtils implements InitializingBean{
         //слова из сообщения
         for(String word: rushWords){
 
-            if(wordsContainer.getStopWords().contains(word.toLowerCase()) && word.endsWith("сука")){
+            if(wordsContainer.getStopWords().contains(word.toLowerCase()) || word.endsWith("ссука")){
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("x"));
                     reaction = true;
@@ -162,7 +162,7 @@ public class CommandUtils implements InitializingBean{
 
     private void showHelp(MessageReceivedEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.withDesc("доступные коданды");
+        builder.withDesc("доступные комманды");
         commandMap.forEach((k, v) -> {
             builder.appendField("-->", BOT_PREFIX + k, false);
         });
@@ -170,9 +170,9 @@ public class CommandUtils implements InitializingBean{
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet(){
         commandMap.put("голос", (event, args) -> sendQuote(event));
-        commandMap.put("как дела", (event, args) -> sendMetrics(event));
+        commandMap.put("статус", (event, args) -> sendMetrics(event));
         commandMap.put("портрет", (event, args) -> sendSelfPortrait(event));
         commandMap.put("чай", (event, args) -> showTea(event));
         commandMap.put("help", (event, args) -> showHelp(event));

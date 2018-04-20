@@ -1,6 +1,7 @@
 package com.slug85;
 
 import com.slug85.command.CommandUtils;
+import com.vdurmont.emoji.EmojiManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CommandHandler {
 
     @Autowired
     private CommandUtils commandUtils;
+
+    @Autowired
+    private WordsContainer wordsContainer;
 
     @Autowired
     private void setConnector(Launcher c) {
@@ -55,8 +59,26 @@ public class CommandHandler {
         if(commandUtils.getCommandMap().containsKey(commandStr))
             commandUtils.getCommandMap().get(commandStr).runCommand(event, argsList);
 
-        if(s.toLowerCase().contains("рестартую пилот") || s.contains("рестарт") ){
+        if(s.toLowerCase().contains("рестартую пилот")
+                || s.toLowerCase().contains("рестарт")
+                || s.toLowerCase().contains("пилот рестарт")
+                ){
+            log.info("РЕСТАРТ ПИЛОТА");
             commandUtils.restartPilot(event);
+        }
+
+        //упоминание бота
+        if(s.toLowerCase().contains(" бот ") || s.toLowerCase().contains(" бот.") || s.contains("Бот ")){
+            boolean reacted = false;
+            for(String word: s.split(" ")){
+                if(wordsContainer.getStopWords().contains(word.toLowerCase())){
+                    if(!reacted){
+                        event.getMessage().addReaction(EmojiManager.getForAlias("poo"));
+                        event.getMessage().addReaction(EmojiManager.getForAlias("rage"));
+                        reacted = true;
+                    }
+                }
+            }
         }
 
         commandUtils.checkRushWords(event);
