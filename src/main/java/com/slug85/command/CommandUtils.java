@@ -191,8 +191,10 @@ public class CommandUtils implements InitializingBean{
                 LOGGER.info("rush word " + word);
                 if(wordsContainer.getStopWords().contains(word.toLowerCase())){
                     if(!reacted){
-                        event.getMessage().addReaction(EmojiManager.getForAlias("poo"));
-                        event.getMessage().addReaction(EmojiManager.getForAlias("rage"));
+                        event.getMessage().addReaction
+                                (EmojiManager.getForAlias("angry"));
+                        event.getMessage().addReaction
+                                (EmojiManager.getForAlias("rage"));
                         reacted = true;
                     }
                 }
