@@ -9,7 +9,7 @@
             </map>
         </constructor-arg>
     </bean>
-
+    <bean class="com.slug85.ApplicationContextProvider" id="applicationContextProvder"/>
     <bean class="com.slug85.WordsContainer" id="wordsContainer"/>
 
 

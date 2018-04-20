@@ -17,6 +17,7 @@ public class Launcher {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private String clientToken;
     private CommandHandler commandHandler;
+    private IDiscordClient client;
 
     @Value("${discord.CLIENT_TOKEN}")
     private void setClientToken(String ct) {
@@ -35,6 +36,15 @@ public class Launcher {
         cli.getDispatcher().registerListener(clientToken);
         cli.login();
         addListeners(cli);
+        this.client = cli;
+    }
+
+    public IDiscordClient getClient() {
+        return client;
+    }
+
+    public void setClient(IDiscordClient client) {
+        this.client = client;
     }
 
     private void addListeners(IDiscordClient cli){
