@@ -78,7 +78,7 @@ public class CommandUtils implements InitializingBean{
 
     private void sendSelfPortrait(MessageReceivedEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        String avatarUrl = launcher.getClient().getApplicationIconURL();
+        String avatarUrl = "https://cs8.pikabu.ru/post_img/2017/05/25/4/og_og_1495685192266522652.jpg";
         builder.withImage(avatarUrl);
         RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
 
