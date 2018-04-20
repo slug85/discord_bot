@@ -32,7 +32,6 @@ public class ForismaticClient  implements InitializingBean {
         RestAssured.basePath = "api/1.0/";
         SSLConfig sslConfig = sslConfig().allowAllHostnames().relaxedHTTPSValidation();
         RestAssured.config = RestAssured.config().sslConfig(sslConfig);
-        //RestAssured.proxy = host("tmg.soglasie.ru").withPort(8080).withAuth("usrprog","Zappy78rEe$");
         RestAssured.useRelaxedHTTPSValidation();
     }
 
