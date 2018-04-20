@@ -23,7 +23,7 @@ public class WordsContainer implements InitializingBean{
 
     private ArrayList<String> stopWords = new ArrayList<>();
 
-    List<String> getStopWords(){
+    public List<String> getStopWords(){
         return stopWords;
     }
 
