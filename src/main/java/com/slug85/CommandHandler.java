@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.slug85.http.ForismaticClient;
+import com.slug85.http.Quote;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import org.slf4j.Logger;
@@ -47,6 +49,9 @@ public class CommandHandler {
     private ObjectMapper mapper;
 
     @Autowired
+    private ForismaticClient forismaticClient;
+
+    @Autowired
     private Launcher launcher;
 
     @Autowired
@@ -80,6 +85,15 @@ public class CommandHandler {
 
     }
 
+    private void sendQuote(MessageReceivedEvent event) {
+        EmbedBuilder builder = new EmbedBuilder();
+        Quote quote = forismaticClient.getQuote();
+        builder.withDesc(quote.quoteText);
+        builder.withFooterText(quote.quoteAuthor);
+        RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
+
+    }
+
     private void sendMetrics(MessageReceivedEvent event) {
         JsonNode metrics = getMetrics();
         String pretty;
@@ -106,8 +120,7 @@ public class CommandHandler {
 
         String authorName = event.getMessage().getAuthor().getName();
 
-        if(s.contains("рестартую пилот") || s.contains("рестарт") ){
-
+        if(s.toLowerCase().contains("рестартую пилот") || s.contains("рестарт") ){
             //random emoji
             Random r = new Random();
             Collection<Emoji> all = EmojiManager.getAll();
@@ -118,8 +131,12 @@ public class CommandHandler {
         }
 
         //метрики
-        if(s.contains("!бот как дела")){
+        if(s.toLowerCase().contains("!бот как дела")){
             sendMetrics(event);
+        }
+        //цитата
+        if(s.toLowerCase().contains("!бот голос")){
+            sendQuote(event);
         }
 
         //картинка
