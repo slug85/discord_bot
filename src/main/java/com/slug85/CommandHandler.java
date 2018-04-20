@@ -60,7 +60,7 @@ public class CommandHandler {
         }
 
         //упоминание бота
-        if(s.toLowerCase().contains(" бот ") || s.toLowerCase().contains(" бот.") || s.contains("Бот ")){
+        if(s.toLowerCase().contains(" бот ") || s.toLowerCase().endsWith(" бот") || s.startsWith("бот ")){
             boolean reacted = false;
             for(String word: s.split(" ")){
                 if(wordsContainer.getStopWords().contains(word.toLowerCase())){
