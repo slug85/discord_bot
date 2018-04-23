@@ -118,7 +118,7 @@ public class CommandUtils implements InitializingBean{
     private void sendJoke(MessageReceivedEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         Joke joke = chuckClient.getJoke();
-        builder.withDesc(joke.value.joke);
+        builder.withDesc(joke.value.joke.replaceAll("&quot;", "'"));
         RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
 
     }
