@@ -27,9 +27,6 @@ public class CommandHandler {
     private CommandUtils commandUtils;
 
     @Autowired
-    private WordsContainer wordsContainer;
-
-    @Autowired
     private void setConnector(Launcher c) {
         connector = c;
     }
@@ -50,7 +47,7 @@ public class CommandHandler {
         if(commandUtils.getCommandMap().containsKey(commandStr))
             commandUtils.getCommandMap().get(commandStr).runCommand(event, argsList);
 
-        if(s.toLowerCase().contains("рестартую пилот")
+       if(s.toLowerCase().contains("рестартую пилот")
                 || s.toLowerCase().contains("рестарт")
                 || s.toLowerCase().contains("пилот рестарт")
                 ){

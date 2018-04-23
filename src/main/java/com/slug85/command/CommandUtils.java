@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slug85.ApplicationContextProvider;
 import com.slug85.Launcher;
 import com.slug85.WordsContainer;
+import com.slug85.http.ChuckClient;
 import com.slug85.http.ForismaticClient;
+import com.slug85.http.Joke;
 import com.slug85.http.Quote;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
@@ -25,10 +27,8 @@ import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.RequestBuffer;
 
 import javax.annotation.Resource;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by sergey.lugovskoi on 20.04.2018.
@@ -49,6 +49,9 @@ public class CommandUtils implements InitializingBean{
 
     @Autowired
     private ForismaticClient forismaticClient;
+
+    @Autowired
+    private ChuckClient chuckClient;
 
     @Autowired
     private ObjectMapper mapper;
@@ -76,6 +79,17 @@ public class CommandUtils implements InitializingBean{
         });
     }
 
+
+    @Override
+    public void afterPropertiesSet(){
+        commandMap.put("голос", (event, args) -> sendQuote(event));
+        commandMap.put("статус", (event, args) -> sendMetrics(event));
+        commandMap.put("портрет", (event, args) -> sendSelfPortrait(event));
+        commandMap.put("чай", (event, args) -> showTea(event));
+        commandMap.put("чак", (event, args) -> sendJoke(event));
+        commandMap.put("help", (event, args) -> showHelp(event));
+    }
+
     private void sendSelfPortrait(MessageReceivedEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         String avatarUrl = "https://cs8.pikabu.ru/post_img/2017/05/25/4/og_og_1495685192266522652.jpg";
@@ -101,13 +115,17 @@ public class CommandUtils implements InitializingBean{
 
     }
 
-    public void restartPilot(MessageReceivedEvent event){
-        Random r = new Random();
-        Collection<Emoji> all = EmojiManager.getAll();
-        Emoji e = EmojiManager.getAll().stream().skip(r.nextInt(all.size()-1)).findFirst().orElse(EmojiManager.getForAlias("heart"));
-        event.getMessage().addReaction(e);
+    private void sendJoke(MessageReceivedEvent event) {
+        EmbedBuilder builder = new EmbedBuilder();
+        Joke joke = chuckClient.getJoke();
+        builder.withDesc(joke.value.joke);
+        RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
 
-        sendMessage(event.getChannel(), event.getAuthor().mention() + " НЕТ!!!!");
+    }
+
+    public void restartPilot(MessageReceivedEvent event){
+        Emoji e = EmojiManager.getForAlias("scream_cat");
+        event.getMessage().addReaction(e);
     }
 
     public void checkRushWords(MessageReceivedEvent event){
@@ -121,14 +139,14 @@ public class CommandUtils implements InitializingBean{
 
             if(wordsContainer.getStopWords().contains(word.toLowerCase()) || word.endsWith("ссука")){
                 if(!reaction){
-                    event.getMessage().addReaction(EmojiManager.getForAlias("x"));
+                    event.getMessage().addReaction(EmojiManager.getForAlias("scream_cat"));
                     reaction = true;
                 }
                 Integer count = stopWordsCount.get(authorName) == null ? 0 : stopWordsCount.get(authorName);
                 count++;
                 stopWordsCount.put(authorName, count);
-                String msg = event.getAuthor().mention() + " ругался уже " + count + " раз!";
-                sendMessage(event.getChannel(), msg);
+                //String msg = event.getAuthor().mention() + " ругался уже " + count + " раз!";
+                //sendMessage(event.getChannel(), msg);
             }
         }
     }
@@ -173,14 +191,6 @@ public class CommandUtils implements InitializingBean{
         RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
     }
 
-    @Override
-    public void afterPropertiesSet(){
-        commandMap.put("голос", (event, args) -> sendQuote(event));
-        commandMap.put("статус", (event, args) -> sendMetrics(event));
-        commandMap.put("портрет", (event, args) -> sendSelfPortrait(event));
-        commandMap.put("чай", (event, args) -> showTea(event));
-        commandMap.put("help", (event, args) -> showHelp(event));
-    }
 
     public void checkBotRushWords(MessageReceivedEvent event) {
         //упоминание бота
