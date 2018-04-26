@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -12,11 +13,12 @@ import sx.blah.discord.api.IDiscordClient;
  * Created by sergey.lugovskoi on 19.04.2018.
  */
 @Component
+@Scope(value = "singleton")
 public class Launcher {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private String clientToken;
-    private CommandHandler commandHandler;
+    private volatile CommandHandler commandHandler;
     private IDiscordClient client;
 
     @Value("${discord.CLIENT_TOKEN}")
@@ -26,7 +28,8 @@ public class Launcher {
 
     @Autowired
     private void setCommandHandler(CommandHandler ch) {
-        commandHandler = ch;
+        if(commandHandler == null)
+            commandHandler = ch;
     }
 
     void login(){

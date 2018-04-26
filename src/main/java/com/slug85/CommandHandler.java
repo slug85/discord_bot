@@ -4,6 +4,7 @@ import com.slug85.command.CommandUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -18,6 +19,7 @@ import java.util.List;
  * Created by sergey.lugovskoi on 19.04.2018.
  */
 @Component
+@Scope(value = "singleton")
 public class CommandHandler {
 
     private static final Logger log = LoggerFactory.getLogger(CommandHandler.class);
@@ -47,7 +49,7 @@ public class CommandHandler {
         if(commandUtils.getCommandMap().containsKey(commandStr))
             commandUtils.getCommandMap().get(commandStr).runCommand(event, argsList);
 
-       if(s.toLowerCase().contains("рестартую пилот")
+        if(s.toLowerCase().contains("рестартую пилот")
                 || s.toLowerCase().contains("рестарт")
                 || s.toLowerCase().contains("пилот рестарт")
                 ){
