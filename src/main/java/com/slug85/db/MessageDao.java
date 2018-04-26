@@ -3,6 +3,7 @@ package com.slug85.db;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,8 @@ import sx.blah.discord.handle.obj.IMessage;
 
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class MessageDao{
@@ -35,8 +38,28 @@ public class MessageDao{
                 "insert into messages " +
                         "(user_name, channel, content, is_rush, bot_rush, date, guild)" +
                         " values " +
-                        "(:channel, :user, :content, :is_rush, :bot_rush ,:date, :guild)", params);
+                        "(:user, :channel, :content, :is_rush, :bot_rush ,:date, :guild)", params);
 
         LOGGER.info("save message " + message.getStringID() + " is_rush="+isRush + " bot_rush="+botRush);
+    }
+
+    public Map<String, Integer> getMostRudeUser(String guild){
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("guild", guild, Types.VARCHAR);
+
+        String query = "select user_name, count(*), guild from messages\n" +
+                " group by user_name,guild, is_rush " +
+                " having guild = :guild " +
+                " and is_rush = true " +
+                " limit 5";
+
+        return template.query(query, params, (ResultSetExtractor<Map<String, Integer>>) rs -> {
+            HashMap<String,Integer> map = new HashMap<>();
+            while(rs.next()){
+                map.put(rs.getString("user_name"),rs.getInt("count"));
+            }
+            return map;
+        });
+
     }
 }

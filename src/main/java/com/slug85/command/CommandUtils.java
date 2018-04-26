@@ -88,6 +88,15 @@ public class CommandUtils implements InitializingBean{
         commandMap.put("чай", (event, args) -> showTea(event));
         commandMap.put("чак", (event, args) -> sendJoke(event));
         commandMap.put("help", (event, args) -> showHelp(event));
+        commandMap.put("грубияны", (event, args) -> showRudeUsers(event));
+    }
+
+    private void showRudeUsers(MessageReceivedEvent event) {
+        Map<String, Integer> rudeMap = messageDao.getMostRudeUser(event.getGuild().getName());
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.withDesc("грубияны канала "+ event.getGuild().getName());
+        rudeMap.forEach((k, v) -> builder.appendField("автор "+k, "ругался "+v+" раз ", false));
+        RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
     }
 
     private void sendSelfPortrait(MessageReceivedEvent event) {
