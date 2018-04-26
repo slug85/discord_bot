@@ -1,6 +1,7 @@
 package com.slug85;
 
 import com.slug85.command.CommandUtils;
+import com.slug85.db.MessageDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class CommandHandler {
     private CommandUtils commandUtils;
 
     @Autowired
+    private MessageDao messageDao;
+
+    @Autowired
     private void setConnector(Launcher c) {
         connector = c;
     }
@@ -46,20 +50,23 @@ public class CommandHandler {
         List<String> argsList = new ArrayList<>(Arrays.asList(argArray));
         argsList.remove(0); // Remove the command
 
-        if(commandUtils.getCommandMap().containsKey(commandStr))
+        if(commandUtils.getCommandMap().containsKey(commandStr)){
             commandUtils.getCommandMap().get(commandStr).runCommand(event, argsList);
+        }else {
 
-        if(s.toLowerCase().contains("рестартую пилот")
-                || s.toLowerCase().contains("рестарт")
-                || s.toLowerCase().contains("пилот рестарт")
-                ){
-            log.info("РЕСТАРТ ПИЛОТА");
-            commandUtils.restartPilot(event);
+            if (s.toLowerCase().contains("рестартую пилот")
+                    || s.toLowerCase().contains("рестарт")
+                    || s.toLowerCase().contains("пилот рестарт")
+                    ) {
+                log.info("РЕСТАРТ ПИЛОТА");
+                commandUtils.restartPilot(event);
+            }
+
+            boolean isRush = commandUtils.checkRushWords(event);
+            boolean botRush = commandUtils.checkBotRushWords(event);
+            messageDao.saveMessage(event.getMessage(), isRush, botRush);
         }
 
-
-        commandUtils.checkRushWords(event);
-        commandUtils.checkBotRushWords(event);
     }
 
     @EventSubscriber

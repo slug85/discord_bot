@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slug85.ApplicationContextProvider;
-import com.slug85.Launcher;
 import com.slug85.WordsContainer;
+import com.slug85.db.MessageDao;
 import com.slug85.http.ChuckClient;
 import com.slug85.http.ForismaticClient;
 import com.slug85.http.Joke;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class CommandUtils implements InitializingBean{
 
     @Autowired
-    private Launcher launcher;
+    private volatile MessageDao messageDao;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandUtils.class.getName());
 
@@ -128,10 +128,11 @@ public class CommandUtils implements InitializingBean{
         event.getMessage().addReaction(e);
     }
 
-    public void checkRushWords(MessageReceivedEvent event){
+    public boolean checkRushWords(MessageReceivedEvent event){
         //счетчик ругательств и добавление Х эмоджи
         String[] rushWords = event.getMessage().getContent().split(" ");
         boolean reaction = false;
+        boolean isRush = false;
 
         String authorName = event.getAuthor().getName();
         //слова из сообщения
@@ -140,6 +141,8 @@ public class CommandUtils implements InitializingBean{
             if(wordsContainer.getStopWords().contains(word.toLowerCase()) || word.endsWith("ссука")){
                 if(!reaction){
                     event.getMessage().addReaction(EmojiManager.getForAlias("scream_cat"));
+                    //запомнить что это ругательство
+                    isRush = true;
                     reaction = true;
                 }
                 Integer count = stopWordsCount.get(authorName) == null ? 0 : stopWordsCount.get(authorName);
@@ -149,6 +152,7 @@ public class CommandUtils implements InitializingBean{
                 //sendMessage(event.getChannel(), msg);
             }
         }
+        return isRush;
     }
 
     private JsonNode getMetrics(){
@@ -191,8 +195,8 @@ public class CommandUtils implements InitializingBean{
         RequestBuffer.request(() -> event.getChannel().sendMessage(builder.build()));
     }
 
-
-    public void checkBotRushWords(MessageReceivedEvent event) {
+    public boolean checkBotRushWords(MessageReceivedEvent event) {
+        boolean botRush = false;
         //упоминание бота
         String s = event.getMessage().getContent();
         if(s.toLowerCase().contains(" бот ") || s.toLowerCase().endsWith(" бот") || s.startsWith("бот ")){
@@ -203,9 +207,11 @@ public class CommandUtils implements InitializingBean{
                     if(!reacted){
                         sendMessage(event.getChannel(), event.getMessage().getAuthor().mention() + " я тебя запомнил");
                         reacted = true;
+                        botRush = true;
                     }
                 }
             }
         }
+        return botRush;
     }
 }
