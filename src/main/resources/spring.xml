@@ -12,7 +12,8 @@
     <bean class="com.slug85.ApplicationContextProvider" id="applicationContextProvder"/>
     <bean class="com.slug85.WordsContainer" id="wordsContainer"/>
     <bean class="com.slug85.http.ForismaticClient" id="forismaticClient"/>
-    <bean class="com.slug85.http.ChuckClient" id="ChuckClient"/>
+    <bean class="com.slug85.http.ChuckClient" id="сhuckClient"/>
+    <bean class="com.slug85.http.MyRedditClient" id="redditClient"/>
     <bean class="com.slug85.command.CommandUtils" id="commandUtils"/>
 
 

@@ -7,12 +7,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.slug85.ApplicationContextProvider;
 import com.slug85.WordsContainer;
 import com.slug85.db.MessageDao;
-import com.slug85.http.ChuckClient;
-import com.slug85.http.ForismaticClient;
-import com.slug85.http.Joke;
-import com.slug85.http.Quote;
+import com.slug85.http.*;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
+import ga.dryco.redditjerk.wrappers.Link;
+import ga.dryco.redditjerk.wrappers.RedditThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -49,6 +48,9 @@ public class CommandUtils implements InitializingBean{
 
     @Autowired
     private ForismaticClient forismaticClient;
+
+    @Autowired
+    private MyRedditClient reddit;
 
     @Autowired
     private ChuckClient chuckClient;
@@ -89,6 +91,45 @@ public class CommandUtils implements InitializingBean{
         commandMap.put("чак", (event, args) -> sendJoke(event));
         commandMap.put("help", (event, args) -> showHelp(event));
         commandMap.put("грубияны", (event, args) -> showRudeUsers(event));
+        commandMap.put("memes", (event, args) -> showMeme(event));
+    }
+
+    private void showMeme(MessageReceivedEvent event) {
+        RedditThread meme = reddit.getRandomMeme();
+
+        if(meme!=null) {
+
+            StringBuilder message = new StringBuilder();
+            Link data = meme.getSubmissionPost().getData();
+
+            message.append("\n");
+            message.append(data.getTitle());
+            message.append("\n");
+
+            if(data.getUrl().endsWith(".gif")
+                    || data.getUrl().endsWith(".gifv")
+                    || data.getUrl().endsWith(".png")
+                    || data.getUrl().endsWith(".jpeg")
+                    || data.getUrl().endsWith(".jpg")
+                    || data.getUrl().contains("imgur")
+                    || data.getUrl().contains("gfycat")
+                    ){
+
+                if(data.getUrl().contains("imgur")){
+                    data.setUrl(data.getUrl() + ".jpg");
+                }
+
+                message.append("\n");
+                message.append(data.getUrl());
+            }else{
+                message.append("\n");
+                message.append("https://www.reddit.com/");
+                message.append(data.getPermalink());
+            }
+
+
+            sendMessage(event.getChannel(), message.toString());
+        }
     }
 
     private void showRudeUsers(MessageReceivedEvent event) {
