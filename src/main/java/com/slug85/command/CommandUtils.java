@@ -123,7 +123,7 @@ public class CommandUtils implements InitializingBean{
                 message.append(data.getUrl());
             }else{
                 message.append("\n");
-                message.append("https://www.reddit.com/");
+                message.append("https://www.reddit.com");
                 message.append(data.getPermalink());
             }
 
